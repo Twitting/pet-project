@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0.0.1/ddl/user
+      author: twitting
+      changes:
+        - tagDatabase:
+            tag: release/0.0.1
+
+        - createSequence:
+            sequenceName: user_seq
+            startValue: 1
+
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: user_pk
+                  remarks: 'The id is a primary key of the table, it relations city_seq'
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: user_seq
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: phone
+                  type: varchar(15)
+              - column:
+                  name: phone_shown
+                  type: boolean
+                  constraints:
+                    - nullable: false
+                  defaultValue: false
+              - column:
+                  name: email
+                  type: varchar(255)
+              - column:
+                  name: email_shown
+                  type: boolean
+                  constraints:
+                    - nullable: false
+                  defaultValue: false
+              - column:
+                  remarks: 'DB record creation time'
+                  name: created
+                  type: timestamptz(0)
+                  defaultValueDate: current_timestamp
+              - column:
+                  remarks: 'DB record modification time'
+                  name: modified
+                  type: timestamptz(0)
+                  defaultValueDate: current_timestamp
+              - column:
+                  remarks: 'A soft delete flag: true - active, false - deleted'
+                  name: active
+                  type: boolean
+                  defaultValueDate: true
+
+    rollback:
+      - dropTable:
+          tableName: user
+      - dropSequence:
+          sequenceName: user_seq

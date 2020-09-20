@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0.0.1
+      author: twitting
+      comment: Changeset with initialization all db tables
+      changes:
+        - tagDatabase:
+            tag: release/1.0.0
+
+  # DDL
+  - include:
+      file: ddl/user.yaml
+      relativeToChangelogFile: true
