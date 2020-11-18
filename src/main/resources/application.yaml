@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: pet-project
+  security:
+    user:
+      name: admin
+      password: password
   jpa:
     hibernate:
       ddl-auto: none
@@ -18,9 +22,9 @@ spring:
         order_inserts: true
     open-in-view: false
   datasource:
-    url: jdbc:p6spy:postgresql://localhost:5433/pet
-    username: pet
-    password: pet
+    url: jdbc:p6spy:postgresql://localhost:5432/pet
+    username: safs
+    password: safs
     driver-class-name: com.p6spy.engine.spy.P6SpyDriver
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
@@ -32,12 +36,12 @@ spring:
       minimum-idle: 2
       schema: pet_project
   liquibase:
-    enabled: false
-    url: jdbc:postgresql://localhost:5433/pet
+    enabled: true
+    url: jdbc:postgresql://localhost:5432/pet
     default-schema: pet_project
-    user: pet
-    password: pet
-    change-log: file:liquibase/changelog.yaml
+    user: safs
+    password: safs
+    change-log: file:src/main/resources/liquibase/changelog.yaml
     contexts: develop
 
 logging:
@@ -50,5 +54,5 @@ logbook:
   format:
     style: http
   logger:
-    name: SBERFOOD-PROVIDER-REST
+    name: PET-PROJECT-REST
     level: info
