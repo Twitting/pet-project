@@ -1,0 +1,91 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0.0.1/ddl/report
+      author: twitting
+      changes:
+        - tagDatabase:
+            tag: release/0.0.1
+
+        - createSequence:
+            sequenceName: report_seq
+            startValue: 1
+
+        - createTable:
+            tableName: report
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: report_pk
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: report_seq
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    - nullable: false
+                    - foreignKeyName: report_user_id_fk
+                    - references: user(id)
+              - column:
+                  name: pet_name
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: pet_type
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: breed
+                  type: varchar(255)
+              - column:
+                  name: photos
+                  type: clob
+              - column:
+                  name: geo_location
+                  type: geometry(Point,4326)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: radius
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: comment
+                  type: varchar(2000)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: geo_description
+                  type: varchar(2000)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: missing_date
+                  type: date
+                  constraints:
+                    - nullable: false
+              - column:
+                  remarks: 'DB record creation time'
+                  name: created
+                  type: timestamptz(0)
+                  defaultValueDate: current_timestamp
+              - column:
+                  remarks: 'DB record modification time'
+                  name: modified
+                  type: timestamptz(0)
+                  defaultValueDate: current_timestamp
+              - column:
+                  remarks: 'A soft delete flag: true - active, false - deleted'
+                  name: active
+                  type: boolean
+                  defaultValueDate: true
+
+    rollback:
+      - dropTable:
+          tableName: report
+      - dropSequence:
+          sequenceName: report_seq

@@ -1,12 +1,23 @@
+import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
+
 plugins {
-	id 'org.springframework.boot' version '2.3.4.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-	id 'java'
+    id "idea"
+    id "jacoco"
+    id "java-library"
+	id "org.springframework.boot" version "2.3.4.RELEASE"
+	id "io.spring.dependency-management" version "1.0.10.RELEASE"
+	id "com.bmuschko.docker-java-application" version "6.0.0"
+	id "java"
+    id "org.liquibase.gradle" version "2.0.1"
 }
 
-group = 'ru.twitting'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+group = "ru.twitting"
+version = "0.0.1-SNAPSHOT"
+sourceCompatibility = "11"
 
 configurations {
 	compileOnly {
@@ -19,22 +30,77 @@ repositories {
 }
 
 ext {
-	set('springCloudVersion', "Hoxton.SR8")
+
+	set("springCloudVersion", "Hoxton.SR8")
+	set("logstashVersion", "5.2")
+    set("groovyVersion", "2.5.8")
+    set("spatialHibernateVersion", "5.4.9.Final")
+	set("logbackVersion", "1.2.3")
+    set("swaggerVersion", "2.9.2")
+    set("logbookVersion", "2.0.0-RC.7")
+    set("p6spyVersion", "3.8.2")
+    set("commonsLang3Version", "3.9")
+    set("modelMapperVersion", "2.3.4")
+
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.liquibase:liquibase-core'
-	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	api "org.springframework.boot:spring-boot-starter-data-jpa"
+//	api "org.springframework.boot:spring-boot-starter-security"
+	api "org.springframework.boot:spring-boot-starter-web"
+	api "org.springframework.cloud:spring-cloud-starter-sleuth"
+
+    api "org.liquibase:liquibase-core"
+    api "org.hibernate:hibernate-spatial:${spatialHibernateVersion}"
+    api "p6spy:p6spy:${p6spyVersion}"
+    api "org.modelmapper:modelmapper:${modelMapperVersion}"
+
+    api "org.zalando:logbook-spring-boot-starter:${logbookVersion}"
+    api "net.logstash.logback:logstash-logback-encoder:${logstashVersion}"
+    api "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    api "javax.validation:validation-api"
+    api "org.hibernate.validator:hibernate-validator"
+    api "org.hibernate.validator:hibernate-validator-annotation-processor"
+
+	api "io.springfox:springfox-swagger2:${swaggerVersion}"
+    api "io.springfox:springfox-swagger-ui:${swaggerVersion}"
+
+    compileOnly "org.projectlombok:lombok"
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+
+    testCompileOnly "org.projectlombok:lombok"
+    testCompileOnly "org.springframework.boot:spring-boot-configuration-processor"
+
+	runtimeOnly "org.postgresql:postgresql"
+	annotationProcessor "org.projectlombok:lombok"
+
+	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude group: "org.junit.vintage", module: "junit-vintage-engine"
 	}
-	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation "org.springframework.security:spring-security-test"
+
+    runtimeOnly "org.codehaus.groovy:groovy-all:${groovyVersion}"
+
+}
+
+liquibase {
+    def properties = new Properties()
+    def propertyFile = file("liquibase.properties")
+
+    if (propertyFile.exists()) {
+        propertyFile.withInputStream { properties.load(it) }
+    }
+
+    activities {
+        main {
+            changeLogFile "${projectDir}/liquibase/changelog.yaml"
+            outputFile "${buildDir}/liquibase/sql-migration.sql"
+            url properties.get("url", "jdbc:postgresql://localhost:5432/pet")
+            defaultSchemaName properties.get("schema", "pet_project")
+            username properties.get("username", "pet")
+            password properties.get("password", "pet")
+        }
+    }
 }
 
 dependencyManagement {
@@ -43,6 +109,42 @@ dependencyManagement {
 	}
 }
 
+def postgisImageName = "pet/postgis:latest"
+def postgisContainerName = "postgis"
+
+task buildPostgisImage(type: DockerBuildImage) {
+    def resourceDir = sourceSets.main.resources.srcDirs.first()
+    inputDir = file("${resourceDir}/postgis")
+    images = [postgisImageName]
+}
+
+task removePostgisImage(type: DockerRemoveImage) {
+    targetImageId(postgisImageName)
+    force = true
+}
+
+task createPostgisContainer(type: DockerCreateContainer) {
+    dependsOn(buildPostgisImage)
+    targetImageId(postgisImageName)
+    containerName = postgisContainerName
+    hostConfig.portBindings = ["5000:5432"]
+    hostConfig.autoRemove = true
+}
+
+task startPostgisContainer(type: DockerStartContainer) {
+    dependsOn(createPostgisContainer)
+    targetContainerId(postgisContainerName)
+}
+
+task stopPostgisContainer(type: DockerStopContainer) {
+    targetContainerId(postgisContainerName)
+    finalizedBy(removePostgisImage)
+}
+
 test {
-	useJUnitPlatform()
+    dependsOn(startPostgisContainer)
+    useJUnitPlatform {
+        includeTags "SpringMockTest", "SpringIntegrationTest", "UnitTest"
+    }
+    finalizedBy(stopPostgisContainer)
 }

@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0.0.1/ddl/tag
+      author: twitting
+      changes:
+        - tagDatabase:
+            tag: release/0.0.1
+
+        - createSequence:
+            sequenceName: tag_seq
+            startValue: 1
+
+        - createTable:
+            tableName: tag
+            columns:
+              - column:
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: tag_pk
+                  name: id
+                  type: bigint
+                  defaultValueSequenceNext: tag_seq
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+
+    rollback:
+      - dropTable:
+          tableName: tag
+      - dropSequence:
+          sequenceName: tag_seq
