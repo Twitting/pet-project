@@ -53,7 +53,7 @@ class ReportEntityBuilderTest {
         );
     }
 
-    //  -------------------------------- POSITIVE TESTS --------------------------------
+    //  ------------------------------------------------ POSITIVE TESTS ------------------------------------------------
 
     @Test
     @DisplayName("createReport(): returns valid response entity on valid request, user in db")
@@ -67,7 +67,7 @@ class ReportEntityBuilderTest {
 
         assertNotNull(actual);
         assertNotNull(actual.getGeoLocation());
-        assertNotNull(actual.getMissingDate());
+        assertNotNull(actual.getLostFoundDate());
         assertNotNull(actual.getTags());
         assertNotNull(actual.getPetType());
         verify(tagAccessServiceMock).findOrCreateByNames(any());
@@ -89,7 +89,7 @@ class ReportEntityBuilderTest {
 
         assertNotNull(actual);
         assertNotNull(actual.getGeoLocation());
-        assertNotNull(actual.getMissingDate());
+        assertNotNull(actual.getLostFoundDate());
         assertNotNull(actual.getTags());
         assertNotNull(actual.getPetType());
         verify(tagAccessServiceMock).findOrCreateByNames(any());
@@ -97,7 +97,7 @@ class ReportEntityBuilderTest {
         verify(userReportDtoMapperMock).convertToDestination(any());
     }
 
-    //  -------------------------------- NEGATIVE TESTS --------------------------------
+    //  ------------------------------------------------ NEGATIVE TESTS ------------------------------------------------
 
     @Test
     @DisplayName("createReport(): throws exception on null argument")

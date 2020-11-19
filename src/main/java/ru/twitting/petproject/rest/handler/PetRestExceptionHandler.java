@@ -24,20 +24,20 @@ public class PetRestExceptionHandler {
             HttpMessageNotReadableException.class, MethodArgumentNotValidException.class,
             BadRequestException.class
     })
-    ResponseEntity<BaseResponse> badRequestException(Exception e) {
+    ResponseEntity<BaseResponse<String>> badRequestException(Exception e) {
         LOGGER.error("Bad request exception occured", e);
         return ResponseEntity.status(BAD_REQUEST).body(new BaseResponse(e.getMessage()));
     }
 
 
     @ExceptionHandler(NotFoundException.class)
-    ResponseEntity exception(NotFoundException e) {
+    ResponseEntity<BaseResponse<String>> exception(NotFoundException e) {
         LOGGER.error("Not found exception occured", e);
         return ResponseEntity.status(NOT_FOUND).body(new BaseResponse(e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
-    ResponseEntity exception(Exception e) {
+    ResponseEntity<BaseResponse<String>> exception(Exception e) {
         LOGGER.error("An unknown exception was caught", e);
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new BaseResponse(e.getMessage()));
     }

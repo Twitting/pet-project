@@ -13,8 +13,15 @@ public class BaseResponse<T> {
     @JsonProperty(value = "message")
     protected final String message;
 
+    private T body;
+
     public BaseResponse() {
         this.message = "Success";
+    }
+
+    public BaseResponse(T body) {
+        this.message = "Success";
+        this.body = body;
     }
 
     public BaseResponse(String message) {

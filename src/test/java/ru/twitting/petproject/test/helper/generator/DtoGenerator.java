@@ -6,7 +6,7 @@ import ru.twitting.petproject.model.base.PetType;
 import ru.twitting.petproject.model.dto.ExtraInfoDto;
 import ru.twitting.petproject.model.dto.GeoDto;
 import ru.twitting.petproject.model.dto.PetDto;
-import ru.twitting.petproject.model.dto.UserReportDto;
+import ru.twitting.petproject.model.dto.UserReportRequestDto;
 import ru.twitting.petproject.model.dto.request.CreateReportRequest;
 
 import java.time.LocalDate;
@@ -28,7 +28,7 @@ public final class DtoGenerator {
     private static ExtraInfoDto generateExtraInfo() {
         var dto = new ExtraInfoDto();
         dto.setComment(generateString());
-        dto.setMissingDate(LocalDate.now());
+        dto.setLostFoundDate(LocalDate.now());
         return dto;
     }
 
@@ -46,13 +46,13 @@ public final class DtoGenerator {
         dto.setName(generateString());
         dto.setType(PetType.CAT);
         dto.setBreed(generateString());
-        dto.setPhotos(generateSet(3, () -> generateString()));
-        dto.setTags(generateSet(3, () -> generateString()));
+        dto.setPhotos(generateSet(3, CommonGenerator::generateString));
+        dto.setTags(generateSet(3, CommonGenerator::generateString));
         return dto;
     }
 
-    public static UserReportDto generateUserReportDto() {
-        var dto = new UserReportDto();
+    public static UserReportRequestDto generateUserReportDto() {
+        var dto = new UserReportRequestDto();
         dto.setName(generateString());
         dto.setEmail(generateEmail());
         dto.setPhone(generatePhone());

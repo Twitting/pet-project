@@ -7,11 +7,6 @@ import ru.twitting.petproject.dao.entity.ReportEntity;
 import ru.twitting.petproject.dao.entity.TagEntity;
 import ru.twitting.petproject.dao.entity.UserEntity;
 import ru.twitting.petproject.model.base.PetType;
-import ru.twitting.petproject.model.dto.ExtraInfoDto;
-import ru.twitting.petproject.model.dto.GeoDto;
-import ru.twitting.petproject.model.dto.PetDto;
-import ru.twitting.petproject.model.dto.UserReportDto;
-import ru.twitting.petproject.model.dto.request.CreateReportRequest;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -41,7 +36,7 @@ public final class EntityGenerator {
 
     public static ReportEntity generateReportEntity() {
         var entity = new ReportEntity();
-        entity.setMissingDate(LocalDate.now());
+        entity.setLostFoundDate(LocalDate.now());
         entity.setComment(generateString());
         entity.setGeoDescription(generateString());
         entity.setRadius(generateDouble());

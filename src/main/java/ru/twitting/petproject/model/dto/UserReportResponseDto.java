@@ -1,5 +1,6 @@
 package ru.twitting.petproject.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,15 +8,11 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
-public class UserReportDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UserReportResponseDto {
 
     @NotNull
     private String name;
-    @NotNull
-    private String password; //temporary
     private String phone;
-    private Boolean phoneShown;
     private String email;
-    private Boolean emailShown;
-
 }

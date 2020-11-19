@@ -5,16 +5,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.ResultCheckStyle;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 import org.locationtech.jts.geom.Point;
 import ru.twitting.petproject.converter.PhotoAttributeConverter;
 import ru.twitting.petproject.model.base.PetType;
+import ru.twitting.petproject.model.base.ReportType;
 import ru.twitting.petproject.util.jackson.PointJacksonSerializer;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,12 +34,16 @@ public class ReportEntity extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @Column(name = "pet_name", nullable = false)
+    @Column(name = "pet_name")
     private String petName;
 
     @Column(name = "pet_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private PetType petType;
+
+    @Column(name = "report_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ReportType reportType;
 
     @Column(name = "breed")
     private String breed;
@@ -62,7 +64,7 @@ public class ReportEntity extends BaseEntity {
     @Column(name = "geo_location", nullable = false, columnDefinition = "geometry(Point,4326)")
     private Point geoLocation;
 
-    @Column(name = "radius", nullable = false)
+    @Column(name = "radius")
     private Double radius;
 
     @Column(name = "comment", nullable = false)
@@ -71,6 +73,6 @@ public class ReportEntity extends BaseEntity {
     @Column(name = "geo_description")
     private String geoDescription;
 
-    @Column(name = "missing_date", nullable = false)
-    private LocalDate missingDate;
+    @Column(name = "lost_found_date", nullable = false)
+    private LocalDate lostFoundDate;
 }

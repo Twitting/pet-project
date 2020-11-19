@@ -2,10 +2,11 @@ package ru.twitting.petproject.model.dto.request;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.twitting.petproject.model.base.ReportType;
 import ru.twitting.petproject.model.dto.ExtraInfoDto;
 import ru.twitting.petproject.model.dto.GeoDto;
 import ru.twitting.petproject.model.dto.PetDto;
-import ru.twitting.petproject.model.dto.UserReportDto;
+import ru.twitting.petproject.model.dto.UserReportRequestDto;
 
 import javax.validation.constraints.NotNull;
 
@@ -14,7 +15,9 @@ import javax.validation.constraints.NotNull;
 public class CreateReportRequest {
 
     @NotNull
-    private UserReportDto user;
+    private ReportType reportType;
+    @NotNull
+    private UserReportRequestDto user;
     @NotNull
     private PetDto pet;
     @NotNull

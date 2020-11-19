@@ -4,10 +4,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import ru.twitting.petproject.dao.entity.UserEntity;
 import ru.twitting.petproject.mapper.AbstractDtoMapper;
-import ru.twitting.petproject.model.dto.UserReportDto;
+import ru.twitting.petproject.model.dto.UserReportRequestDto;
 
 @Component
-public class UserReportDtoMapper extends AbstractDtoMapper<UserReportDto, UserEntity> {
+public class UserReportDtoMapper extends AbstractDtoMapper<UserReportRequestDto, UserEntity> {
 
     protected UserReportDtoMapper(ModelMapper modelMapper) {
         super(modelMapper);

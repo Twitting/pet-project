@@ -30,10 +30,13 @@ databaseChangeLog:
               - column:
                   name: pet_name
                   type: varchar(255)
+              - column:
+                  name: pet_type
+                  type: varchar(255)
                   constraints:
                     - nullable: false
               - column:
-                  name: pet_type
+                  name: report_type
                   type: varchar(255)
                   constraints:
                     - nullable: false
@@ -50,9 +53,7 @@ databaseChangeLog:
                     - nullable: false
               - column:
                   name: radius
-                  type: varchar(255)
-                  constraints:
-                    - nullable: false
+                  type: double
               - column:
                   name: comment
                   type: varchar(2000)
@@ -64,7 +65,7 @@ databaseChangeLog:
                   constraints:
                     - nullable: false
               - column:
-                  name: missing_date
+                  name: lost_found_date
                   type: date
                   constraints:
                     - nullable: false

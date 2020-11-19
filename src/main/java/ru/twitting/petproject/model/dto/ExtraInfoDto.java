@@ -14,5 +14,5 @@ public class ExtraInfoDto {
     @NotBlank
     private String comment;
     @NotNull
-    private LocalDate missingDate;
+    private LocalDate lostFoundDate;
 }
