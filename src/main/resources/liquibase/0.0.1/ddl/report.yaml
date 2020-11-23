@@ -36,6 +36,9 @@ databaseChangeLog:
                   constraints:
                     - nullable: false
               - column:
+                  name: sex
+                  type: varchar(255)
+              - column:
                   name: report_type
                   type: varchar(255)
                   constraints:

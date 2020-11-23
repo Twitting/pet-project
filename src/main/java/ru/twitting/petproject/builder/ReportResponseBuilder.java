@@ -1,6 +1,7 @@
 package ru.twitting.petproject.builder;
 
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import ru.twitting.petproject.dao.entity.ReportEntity;
 import ru.twitting.petproject.dao.entity.TagEntity;
 import ru.twitting.petproject.model.dto.ExtraInfoDto;
@@ -9,12 +10,17 @@ import ru.twitting.petproject.model.dto.PetDto;
 import ru.twitting.petproject.model.dto.UserReportResponseDto;
 import ru.twitting.petproject.model.dto.response.ReportResponse;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static ru.twitting.petproject.util.PointUtils.distance;
+
 
 @RequiredArgsConstructor
 public class ReportResponseBuilder {
 
     private final ReportEntity entity;
+    private final Point point;
 
     public ReportResponse build() {
         var response = new ReportResponse();
@@ -22,6 +28,7 @@ public class ReportResponseBuilder {
         response.setGeo(getGeo());
         response.setPet(getPet());
         response.setUser(getUser());
+        Optional.ofNullable(point).ifPresent(it -> response.setDistance(distance(point, entity.getGeoLocation())));
         return response;
     }
 
@@ -43,6 +50,7 @@ public class ReportResponseBuilder {
                 .collect(Collectors.toSet()));
         pet.setBreed(entity.getBreed());
         pet.setPhotos(entity.getPhotos());
+        pet.setSex(entity.getSex());
         return pet;
     }
 

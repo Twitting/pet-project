@@ -19,4 +19,6 @@ public class ReportResponse {
     @NotNull
     private ExtraInfoDto extraInfo;
 
+    private Double distance;
+
 }

@@ -26,6 +26,7 @@ public class ReportEntityBuilder {
         report.setUser(getUser(request.getUser()));
         report.setReportType(request.getReportType());
         var pet = request.getPet();
+        report.setSex(pet.getSex());
         report.setTags(tagAccessService.findOrCreateByNames(pet.getTags()));
         report.setBreed(pet.getBreed());
         report.setPetName(pet.getName());

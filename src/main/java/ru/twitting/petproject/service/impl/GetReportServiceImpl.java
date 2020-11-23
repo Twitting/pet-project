@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.twitting.petproject.builder.ReportResponseBuilder;
 import ru.twitting.petproject.dao.access.ReportAccessService;
-import ru.twitting.petproject.model.base.ReportType;
+import ru.twitting.petproject.model.dto.ReportSearchParamsDto;
 import ru.twitting.petproject.model.dto.response.ReportResponse;
 import ru.twitting.petproject.service.GetReportService;
 
@@ -19,8 +19,8 @@ public class GetReportServiceImpl implements GetReportService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<ReportResponse> getReports(ReportType reportType, Pageable pageable) {
-        return reportAccessService.findAllByReportType(reportType, pageable)
-                .map(it -> new ReportResponseBuilder(it).build());
+    public Page<ReportResponse> getReports(ReportSearchParamsDto searchParams, Pageable pageable) {
+        return reportAccessService.findAllByReportType(searchParams, pageable)
+                .map(it -> new ReportResponseBuilder(it, searchParams.getGeoLocation()).build());
     }
 }

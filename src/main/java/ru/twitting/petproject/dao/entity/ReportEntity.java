@@ -10,6 +10,7 @@ import org.locationtech.jts.geom.Point;
 import ru.twitting.petproject.converter.PhotoAttributeConverter;
 import ru.twitting.petproject.model.base.PetType;
 import ru.twitting.petproject.model.base.ReportType;
+import ru.twitting.petproject.model.base.SexType;
 import ru.twitting.petproject.util.jackson.PointJacksonSerializer;
 
 import javax.persistence.*;
@@ -40,6 +41,10 @@ public class ReportEntity extends BaseEntity {
     @Column(name = "pet_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private PetType petType;
+
+    @Column(name = "sex")
+    @Enumerated(EnumType.STRING)
+    private SexType sex;
 
     @Column(name = "report_type", nullable = false)
     @Enumerated(EnumType.STRING)

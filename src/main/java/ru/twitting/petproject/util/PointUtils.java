@@ -21,6 +21,15 @@ public final class PointUtils {
     private static final int GPS_SRID = 4326;
     private static final int EARTH_RADIUS_METERS = 6371302;
 
+
+    public static Point ofPostGisNullable(Double latitude, Double longitude) {
+        if (Objects.isNull(latitude) || Objects.isNull(longitude)) {
+            return null;
+        } else {
+            return ofPostGis(latitude, longitude);
+        }
+    }
+
     /**
      * Constructs a <code>Point</code> with the given coordinate and with a {@link #GPS_SRID}
      *
@@ -38,6 +47,10 @@ public final class PointUtils {
 
     public static boolean hasCoordinates(Double latitude, Double longitude) {
         return Objects.nonNull(latitude) && Objects.nonNull(longitude);
+    }
+
+    public static Double distance(Point from, Point to) {
+        return distance(from.getY(), to.getY(), from.getX(), to.getX());
     }
 
     /**

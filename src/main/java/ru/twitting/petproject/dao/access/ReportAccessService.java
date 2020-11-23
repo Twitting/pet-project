@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.twitting.petproject.dao.entity.ReportEntity;
 import ru.twitting.petproject.dao.repository.ReportRepository;
-import ru.twitting.petproject.model.base.ReportType;
+import ru.twitting.petproject.dao.specification.ReportSpecification;
+import ru.twitting.petproject.model.dto.ReportSearchParamsDto;
 
 import javax.transaction.Transactional;
 
@@ -23,7 +25,7 @@ public class ReportAccessService {
         return repository.save(entity);
     }
 
-    public Page<ReportEntity> findAllByReportType(ReportType reportType, Pageable pageable) {
-        return repository.findAllByReportType(reportType, pageable);
+    public Page<ReportEntity> findAllByReportType(ReportSearchParamsDto searchParams, Pageable pageable) {
+        return repository.findAll(Specification.where(new ReportSpecification(searchParams)), pageable);
     }
 }
