@@ -2,6 +2,8 @@ package ru.twitting.petproject.dao.access;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.twitting.petproject.dao.entity.TagEntity;
 import ru.twitting.petproject.dao.repository.TagRepository;
@@ -26,6 +28,10 @@ public class TagAccessService {
         return names.stream()
                 .map(it -> result.getOrDefault(it, new TagEntity(it)))
                 .collect(Collectors.toSet());
+    }
+
+    public Page<String> findAllNames(Pageable pageable) {
+        return repository.findAllOrderByPopularity(pageable).map(TagEntity::getName);
     }
 
 }
