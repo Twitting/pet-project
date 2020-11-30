@@ -6,6 +6,7 @@ import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
 
 plugins {
     id "idea"
+    id "jacoco"
     id "java-library"
 	id "org.springframework.boot" version "2.3.4.RELEASE"
 	id "io.spring.dependency-management" version "1.0.10.RELEASE"
@@ -29,6 +30,7 @@ repositories {
 }
 
 ext {
+
 	set("springCloudVersion", "Hoxton.SR8")
 	set("logstashVersion", "5.2")
     set("groovyVersion", "2.5.8")
@@ -38,17 +40,20 @@ ext {
     set("logbookVersion", "2.0.0-RC.7")
     set("p6spyVersion", "3.8.2")
     set("commonsLang3Version", "3.9")
+    set("modelMapperVersion", "2.3.4")
+
 }
 
 dependencies {
 	api "org.springframework.boot:spring-boot-starter-data-jpa"
-	api "org.springframework.boot:spring-boot-starter-security"
+//	api "org.springframework.boot:spring-boot-starter-security"
 	api "org.springframework.boot:spring-boot-starter-web"
 	api "org.springframework.cloud:spring-cloud-starter-sleuth"
 
     api "org.liquibase:liquibase-core"
     api "org.hibernate:hibernate-spatial:${spatialHibernateVersion}"
     api "p6spy:p6spy:${p6spyVersion}"
+    api "org.modelmapper:modelmapper:${modelMapperVersion}"
 
     api "org.zalando:logbook-spring-boot-starter:${logbookVersion}"
     api "net.logstash.logback:logstash-logback-encoder:${logstashVersion}"
@@ -60,9 +65,15 @@ dependencies {
 	api "io.springfox:springfox-swagger2:${swaggerVersion}"
     api "io.springfox:springfox-swagger-ui:${swaggerVersion}"
 
-	compileOnly "org.projectlombok:lombok"
+    compileOnly "org.projectlombok:lombok"
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+
+    testCompileOnly "org.projectlombok:lombok"
+    testCompileOnly "org.springframework.boot:spring-boot-configuration-processor"
+
 	runtimeOnly "org.postgresql:postgresql"
 	annotationProcessor "org.projectlombok:lombok"
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude group: "org.junit.vintage", module: "junit-vintage-engine"
 	}
@@ -84,7 +95,7 @@ liquibase {
         main {
             changeLogFile "${projectDir}/liquibase/changelog.yaml"
             outputFile "${buildDir}/liquibase/sql-migration.sql"
-            url properties.get("url", "jdbc:postgresql://localhost:5433/pet")
+            url properties.get("url", "jdbc:postgresql://localhost:5432/pet")
             defaultSchemaName properties.get("schema", "pet_project")
             username properties.get("username", "pet")
             password properties.get("password", "pet")
@@ -116,7 +127,7 @@ task createPostgisContainer(type: DockerCreateContainer) {
     dependsOn(buildPostgisImage)
     targetImageId(postgisImageName)
     containerName = postgisContainerName
-    hostConfig.portBindings = ["5000:5433"]
+    hostConfig.portBindings = ["5000:5432"]
     hostConfig.autoRemove = true
 }
 
@@ -130,7 +141,10 @@ task stopPostgisContainer(type: DockerStopContainer) {
     finalizedBy(removePostgisImage)
 }
 
-
 test {
-	useJUnitPlatform()
+    dependsOn(startPostgisContainer)
+    useJUnitPlatform {
+        includeTags "SpringMockTest", "SpringIntegrationTest", "UnitTest"
+    }
+    finalizedBy(stopPostgisContainer)
 }

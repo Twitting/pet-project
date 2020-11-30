@@ -11,3 +11,12 @@ databaseChangeLog:
   - include:
       file: ddl/user.yaml
       relativeToChangelogFile: true
+  - include:
+      file: ddl/tag.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: ddl/report.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: ddl/report_tag.yaml
+      relativeToChangelogFile: true

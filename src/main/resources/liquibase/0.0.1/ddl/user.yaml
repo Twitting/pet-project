@@ -17,7 +17,6 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     primaryKeyName: user_pk
-                  remarks: 'The id is a primary key of the table, it relations city_seq'
                   name: id
                   type: bigint
                   defaultValueSequenceNext: user_seq
@@ -29,8 +28,6 @@ databaseChangeLog:
               - column:
                   name: password
                   type: varchar(255)
-                  constraints:
-                    - nullable: false
               - column:
                   name: phone
                   type: varchar(15)

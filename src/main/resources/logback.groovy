@@ -24,4 +24,4 @@ appender("LOGSTASH", RollingFileAppender) {
     encoder(LogstashEncoder)
 }
 
-root(ch.qos.logback.classic.Level.INFO, ["CONSOLE", "LOGSTASH"])
+root(ch.qos.logback.classic.Level.DEBUG, ["CONSOLE", "LOGSTASH"])
