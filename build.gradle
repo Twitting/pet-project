@@ -1,16 +1,9 @@
-import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
-import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
-import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
-import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerRemoveImage
-
 plugins {
     id "idea"
     id "jacoco"
     id "java-library"
 	id "org.springframework.boot" version "2.3.4.RELEASE"
 	id "io.spring.dependency-management" version "1.0.10.RELEASE"
-	id "com.bmuschko.docker-java-application" version "6.0.0"
 	id "java"
     id "org.liquibase.gradle" version "2.0.1"
 }
@@ -41,6 +34,7 @@ ext {
     set("p6spyVersion", "3.8.2")
     set("commonsLang3Version", "3.9")
     set("modelMapperVersion", "2.3.4")
+    set("testContainersVersion", "1.15.0")
 
 }
 
@@ -67,6 +61,9 @@ dependencies {
 
     compileOnly "org.projectlombok:lombok"
     compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+
+    testCompile "org.testcontainers:postgresql:${testContainersVersion}"
+    testCompile "org.testcontainers:junit-jupiter:${testContainersVersion}"
 
     testCompileOnly "org.projectlombok:lombok"
     testCompileOnly "org.springframework.boot:spring-boot-configuration-processor"
@@ -109,42 +106,8 @@ dependencyManagement {
 	}
 }
 
-def postgisImageName = "pet/postgis:latest"
-def postgisContainerName = "postgis"
-
-task buildPostgisImage(type: DockerBuildImage) {
-    def resourceDir = sourceSets.main.resources.srcDirs.first()
-    inputDir = file("${resourceDir}/postgis")
-    images = [postgisImageName]
-}
-
-task removePostgisImage(type: DockerRemoveImage) {
-    targetImageId(postgisImageName)
-    force = true
-}
-
-task createPostgisContainer(type: DockerCreateContainer) {
-    dependsOn(buildPostgisImage)
-    targetImageId(postgisImageName)
-    containerName = postgisContainerName
-    hostConfig.portBindings = ["5000:5432"]
-    hostConfig.autoRemove = true
-}
-
-task startPostgisContainer(type: DockerStartContainer) {
-    dependsOn(createPostgisContainer)
-    targetContainerId(postgisContainerName)
-}
-
-task stopPostgisContainer(type: DockerStopContainer) {
-    targetContainerId(postgisContainerName)
-    finalizedBy(removePostgisImage)
-}
-
 test {
-    dependsOn(startPostgisContainer)
     useJUnitPlatform {
         includeTags "SpringMockTest", "SpringIntegrationTest", "UnitTest"
     }
-    finalizedBy(stopPostgisContainer)
 }

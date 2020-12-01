@@ -1,0 +1,6 @@
+embedded:
+  postgresql:
+    enabled: true
+    dockerImage: mdillon/postgis:9.4
+    user: test
+    password: test

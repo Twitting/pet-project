@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: pet-project
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+        default_schema: pet_project
+        jdbc:
+          batch_size: 1000
+        order_inserts: true
+    open-in-view: false
+  datasource:
+    url: jdbc:tc:postgis:9.4://localhost/test
+    username: ${embedded.postgresql.user}
+    password: ${embedded.postgresql.password}
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      schema: pet_project
+    initialization-mode: always
+  liquibase:
+    url: jdbc:tc:postgis:9.4://localhost/test
+    change-log: file:src/main/resources/liquibase/changelog.yaml
+    default-schema: pet_project
+
+logging:
+  config: src/test/resources/logback.groovy
+
+logbook:
+  strategy: body-only-if-status-at-least
+  exclude:
+    - /actuator/health
+  format:
+    style: http
+  logger:
+    name: PET-PROJECT-REST
+    level: info
