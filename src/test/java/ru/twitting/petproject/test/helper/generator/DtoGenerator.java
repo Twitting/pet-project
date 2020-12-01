@@ -3,6 +3,7 @@ package ru.twitting.petproject.test.helper.generator;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.twitting.petproject.model.base.PetType;
+import ru.twitting.petproject.model.base.ReportType;
 import ru.twitting.petproject.model.dto.ExtraInfoDto;
 import ru.twitting.petproject.model.dto.GeoDto;
 import ru.twitting.petproject.model.dto.PetDto;
@@ -22,6 +23,7 @@ public final class DtoGenerator {
         dto.setGeo(generateGeoDto());
         dto.setPet(generatePetDto());
         dto.setUser(generateUserReportDto());
+        dto.setReportType(ReportType.LOST);
         return dto;
     }
 
