@@ -5,9 +5,9 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.ResultCheckStyle;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import ru.twitting.petproject.model.base.UserAuthorityType;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -22,8 +22,11 @@ public class UserEntity extends BaseEntity {
     @SequenceGenerator(name = "userSeqGenerator", sequenceName = "user_seq", allocationSize = 1)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "shownName", nullable = false)
+    private String shownName;
 
     @Column(name = "password")
     private String password;
@@ -40,8 +43,8 @@ public class UserEntity extends BaseEntity {
     @Column(name = "email_shown")
     private Boolean emailShown;
 
-    public boolean authorized() {
-        return Objects.nonNull(password) && !password.isBlank();
-    }
+    @Column(name = "authority")
+    @Enumerated(EnumType.STRING)
+    private UserAuthorityType authorityType = UserAuthorityType.USER;
 
 }

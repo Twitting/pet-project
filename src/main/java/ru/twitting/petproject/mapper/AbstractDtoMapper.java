@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-@Slf4j(topic = "GEOMAGNETIC-MAPPER")
+@Slf4j(topic = "PET-MAPPER")
 public abstract class AbstractDtoMapper<S, D> {
 
     private static final String NOT_NULL_DESTINATION_ERROR_MESSAGE = "A destination shouldn't be null!";

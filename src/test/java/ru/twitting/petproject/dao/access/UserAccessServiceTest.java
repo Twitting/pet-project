@@ -30,20 +30,20 @@ class UserAccessServiceTest {
 
         assertNotNull(actual);
         assertNotNull(actual.getId());
-        assertEquals(entity.getName(), actual.getName());
+        assertEquals(entity.getUsername(), actual.getUsername());
     }
 
     @Test
-    @DisplayName("findByNameAndPassword(): returns valid entity")
-    void successfulFindByNameAndPassword() {
+    @DisplayName("findByUsername(): returns valid entity")
+    void successfulFindByUsername() {
         var entity = generateUserEntity();
         userAccessService.save(entity);
 
-        var actual = userAccessService.findByNameAndPassword(entity.getName(), entity.getPassword());
+        var actual = userAccessService.findByUsername(entity.getUsername());
 
         assertNotNull(actual);
         assertTrue(actual.isPresent());
-        assertEquals(entity.getName(), actual.orElseThrow().getName());
+        assertEquals(entity.getUsername(), actual.orElseThrow().getUsername());
     }
 
 }

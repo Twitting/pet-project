@@ -1,0 +1,1 @@
+INSERT INTO pet_project."user" (id, username, shown_name, password, phone, phone_shown, email, email_shown, authority, created, modified, active) VALUES (1, 'username', 'user', '$2a$10$9hE7rHyGleF9n.q1.bOKCO3MVI60F58CtabhtYxhVv7AWABgJ8yRq', 'string', true, 'string@mail.ru', true, 'USER', '2020-12-08 12:32:27', '2020-12-08 12:32:27', true);

@@ -5,18 +5,22 @@ import lombok.NoArgsConstructor;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ControllerHelper {
 
-    @SafeVarargs
-    public static <T> ResponseEntity<T> get(TestRestTemplate restTemplate, Class<T> responseType, String path,
+    private static final String TEST_CREDENTIALS = "username:pwd";
+    public static final String TEST_AUTH_HEADER = "Basic " + DatatypeConverter.printBase64Binary((TEST_CREDENTIALS).getBytes());
+
+    public static <T> ResponseEntity<T> get(TestRestTemplate restTemplate, String path,
                                             int port, Map.Entry<String, String>... queryParams) {
-        return execute(restTemplate, path, port, responseType, queryParams);
+        return exchange(restTemplate, null, HttpMethod.GET, path, port, queryParams);
     }
 
     public static <T, R> ResponseEntity<T> post(TestRestTemplate restTemplate, R request, String path, int port) {
@@ -36,17 +40,12 @@ public final class ControllerHelper {
     }
 
     private static <T, R> ResponseEntity<T> exchange(TestRestTemplate restTemplate, R request,
-                                                     HttpMethod method, String path, int port) {
-        var uri = UriHelper.generateUri(path, port);
-        return restTemplate.exchange(uri, method, new HttpEntity<>(request), new ParameterizedTypeReference<>() {
-        });
-    }
-
-    @SafeVarargs
-    private static <T> ResponseEntity<T> execute(TestRestTemplate restTemplate, String path,
-                                                 int port, Class<T> responseType,
-                                                 Map.Entry<String, String>... queryParams) {
+                                                     HttpMethod method, String path, int port,
+                                                     Map.Entry<String, String>... queryParams) {
+        var headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, TEST_AUTH_HEADER);
         var uri = UriHelper.generateUri(path, port, queryParams);
-        return restTemplate.getForEntity(uri, responseType);
+        return restTemplate.exchange(uri, method, new HttpEntity<>(request, headers), new ParameterizedTypeReference<>() {
+        });
     }
 }

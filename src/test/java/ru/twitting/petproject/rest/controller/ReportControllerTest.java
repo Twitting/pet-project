@@ -1,5 +1,6 @@
 package ru.twitting.petproject.rest.controller;
 
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.twitting.petproject.model.dto.request.CreateReportRequest;
 import ru.twitting.petproject.service.CreateReportService;
@@ -20,9 +23,12 @@ import static org.mockito.Mockito.*;
 import static ru.twitting.petproject.test.helper.AssertionHelper.assertCall;
 import static ru.twitting.petproject.test.helper.ControllerHelper.post;
 import static ru.twitting.petproject.test.helper.generator.DtoGenerator.generateCreateReportRequest;
+import static ru.twitting.petproject.test.helper.generator.DtoGenerator.generateReportResponse;
 
 @SpringIntegrationTest
 @DisplayName("ReportController Integration test")
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/fill.sql")
+@Sql(executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts = "classpath:sql/clean.sql")
 class ReportControllerTest {
 
     @LocalServerPort
@@ -48,13 +54,14 @@ class ReportControllerTest {
         reset(createReportServiceMock);
     }
 
-
     //  -------------------------------- POSITIVE TESTS --------------------------------
 
+    @SneakyThrows
     @Test
     @DisplayName("createReport(): returns valid response entity on valid request")
     void successfulCreateReport() {
-        doNothing().when(createReportServiceMock).createReport(any());
+
+        when(createReportServiceMock.createReport(any())).thenReturn(generateReportResponse());
 
         var actual = assertDoesNotThrow(
                 () -> post(
@@ -74,7 +81,6 @@ class ReportControllerTest {
     @Test
     @DisplayName("createReport(): returns 400 response entity on invalid request")
     void unsuccessfulCreateReport() {
-        doNothing().when(createReportServiceMock).createReport(any());
         var invalidRequest = new CreateReportRequest();
 
         var actual = assertDoesNotThrow(

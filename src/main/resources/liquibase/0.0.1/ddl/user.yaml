@@ -21,7 +21,12 @@ databaseChangeLog:
                   type: bigint
                   defaultValueSequenceNext: user_seq
               - column:
-                  name: name
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
+              - column:
+                  name: shown_name
                   type: varchar(255)
                   constraints:
                     - nullable: false
@@ -46,6 +51,11 @@ databaseChangeLog:
                   constraints:
                     - nullable: false
                   defaultValue: false
+              - column:
+                  name: authority
+                  type: varchar(255)
+                  constraints:
+                    - nullable: false
               - column:
                   remarks: 'DB record creation time'
                   name: created
