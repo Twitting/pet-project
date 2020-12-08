@@ -25,7 +25,8 @@ public final class EntityGenerator {
     public static UserEntity generateUserEntity() {
         var entity = new UserEntity();
         entity.setPassword(generateString());
-        entity.setName(generateString());
+        entity.setUsername(generateString());
+        entity.setShownName(generateString());
         entity.setPhone(generatePhone());
         entity.setEmail(generateEmail());
         entity.setPhoneShown(true);

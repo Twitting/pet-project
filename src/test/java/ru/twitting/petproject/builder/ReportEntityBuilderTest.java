@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.twitting.petproject.dao.access.TagAccessService;
 import ru.twitting.petproject.dao.access.UserAccessService;
-import ru.twitting.petproject.mapper.impl.UserReportDtoMapper;
 import ru.twitting.petproject.test.helper.generator.EntityGenerator;
 import ru.twitting.petproject.test.tags.SpringIntegrationTest;
 
@@ -30,9 +29,7 @@ class ReportEntityBuilderTest {
     private TagAccessService tagAccessServiceMock;
     @Mock
     private UserAccessService userAccessServiceMock;
-    @Mock
-    private UserReportDtoMapper userReportDtoMapperMock;
-
+    
     @Autowired
     private ReportEntityBuilder builder;
 
@@ -41,15 +38,13 @@ class ReportEntityBuilderTest {
         MockitoAnnotations.initMocks(this);
         ReflectionTestUtils.setField(builder, "tagAccessService", tagAccessServiceMock);
         ReflectionTestUtils.setField(builder, "userAccessService", userAccessServiceMock);
-        ReflectionTestUtils.setField(builder, "userReportDtoMapper", userReportDtoMapperMock);
     }
 
     @AfterEach
     void tearDown() {
         reset(
                 tagAccessServiceMock,
-                userAccessServiceMock,
-                userReportDtoMapperMock
+                userAccessServiceMock
         );
     }
 
@@ -60,7 +55,7 @@ class ReportEntityBuilderTest {
     void successfulCreateReportExistUser() {
         when(tagAccessServiceMock.findOrCreateByNames(any()))
                 .thenReturn(generateSet(3, EntityGenerator::generateTagEntity));
-        when(userAccessServiceMock.findByNameAndPassword(any(), any()))
+        when(userAccessServiceMock.findByUsername(any()))
                 .thenReturn(Optional.of(generateUserEntity()));
 
         var actual = assertDoesNotThrow(() -> builder.build(generateCreateReportRequest()));
@@ -71,30 +66,7 @@ class ReportEntityBuilderTest {
         assertNotNull(actual.getTags());
         assertNotNull(actual.getPetType());
         verify(tagAccessServiceMock).findOrCreateByNames(any());
-        verify(userAccessServiceMock).findByNameAndPassword(any(), any());
-        verify(userReportDtoMapperMock, never()).convertToDestination(any());
-    }
-
-    @Test
-    @DisplayName("createReport(): returns valid response entity on valid request, new user")
-    void successfulCreateReportNewUser() {
-        when(tagAccessServiceMock.findOrCreateByNames(any()))
-                .thenReturn(generateSet(3, EntityGenerator::generateTagEntity));
-        when(userAccessServiceMock.findByNameAndPassword(any(), any()))
-                .thenReturn(Optional.empty());
-        when(userReportDtoMapperMock.convertToDestination(any()))
-                .thenReturn(generateUserEntity());
-
-        var actual = assertDoesNotThrow(() -> builder.build(generateCreateReportRequest()));
-
-        assertNotNull(actual);
-        assertNotNull(actual.getGeoLocation());
-        assertNotNull(actual.getLostFoundDate());
-        assertNotNull(actual.getTags());
-        assertNotNull(actual.getPetType());
-        verify(tagAccessServiceMock).findOrCreateByNames(any());
-        verify(userAccessServiceMock).findByNameAndPassword(any(), any());
-        verify(userReportDtoMapperMock).convertToDestination(any());
+        verify(userAccessServiceMock).findByUsername(any());
     }
 
     //  ------------------------------------------------ NEGATIVE TESTS ------------------------------------------------
@@ -106,7 +78,7 @@ class ReportEntityBuilderTest {
         assertThrows(IllegalArgumentException.class, () -> builder.build(null));
 
         verify(tagAccessServiceMock, never()).findOrCreateByNames(any());
-        verify(userAccessServiceMock, never()).findByNameAndPassword(any(), any());
-        verify(userReportDtoMapperMock, never()).convertToDestination(any());
+        verify(userAccessServiceMock, never()).findByUsername(any());
+
     }
 }

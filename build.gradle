@@ -40,7 +40,8 @@ ext {
 
 dependencies {
 	api "org.springframework.boot:spring-boot-starter-data-jpa"
-//	api "org.springframework.boot:spring-boot-starter-security"
+	api "org.springframework.boot:spring-boot-starter-security"
+	api "org.springframework.boot:spring-boot-starter-oauth2-client"
 	api "org.springframework.boot:spring-boot-starter-web"
 	api "org.springframework.cloud:spring-cloud-starter-sleuth"
 
@@ -64,6 +65,8 @@ dependencies {
 
     testCompile "org.testcontainers:postgresql:${testContainersVersion}"
     testCompile "org.testcontainers:junit-jupiter:${testContainersVersion}"
+    testCompile "org.springframework.security:spring-security-test"
+
 
     testCompileOnly "org.projectlombok:lombok"
     testCompileOnly "org.springframework.boot:spring-boot-configuration-processor"

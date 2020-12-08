@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.twitting.petproject.config.swagger.tags.ApiPageable;
@@ -39,8 +40,7 @@ public class ReportController {
     @ApiOperation(value = "Создать объявление о пропаже/находке")
     @PostMapping
     public ResponseEntity<BaseResponse> createReport(@Valid @RequestBody CreateReportRequest request) {
-        createReportService.createReport(request);
-        return ResponseEntity.ok(new BaseResponse());
+        return ResponseEntity.ok(new BaseResponse(createReportService.createReport(request)));
     }
 
     @ApiOperation(value = "Получить страницу с объявлениями")

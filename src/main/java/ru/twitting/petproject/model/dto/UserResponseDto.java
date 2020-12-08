@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserReportResponseDto {
+public class UserResponseDto {
 
     @NotNull
     private String name;

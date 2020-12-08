@@ -6,7 +6,6 @@ import ru.twitting.petproject.model.base.ReportType;
 import ru.twitting.petproject.model.dto.ExtraInfoDto;
 import ru.twitting.petproject.model.dto.GeoDto;
 import ru.twitting.petproject.model.dto.PetDto;
-import ru.twitting.petproject.model.dto.UserReportRequestDto;
 
 import javax.validation.constraints.NotNull;
 
@@ -16,8 +15,6 @@ public class CreateReportRequest {
 
     @NotNull
     private ReportType reportType;
-    @NotNull
-    private UserReportRequestDto user;
     @NotNull
     private PetDto pet;
     @NotNull

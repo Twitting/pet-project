@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.twitting.petproject.dao.entity.UserEntity;
 import ru.twitting.petproject.dao.repository.UserRepository;
+import ru.twitting.petproject.exception.BadRequestException;
+import ru.twitting.petproject.model.dto.UserDto;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
@@ -17,16 +19,19 @@ public class UserAccessService {
 
     private final UserRepository repository;
 
-    public Optional<UserEntity> findByNameAndPassword(String name, String password) {
-        return repository.findByNameAndPassword(name, password);
+    public Optional<UserEntity> findByUsername(String username) {
+        return repository.findByUsername(username);
     }
 
     public UserEntity save(UserEntity entity) {
         return repository.save(entity);
     }
 
-    public boolean existsByEmailOrPhone(String email, String phone) {
-        return repository.existsByEmail(email) || repository.existsByPhone(phone);
+    public void checkIfUserExist(UserDto userDto) {
+        if (repository.existsByEmail(userDto.getEmail()) ||
+                repository.existsByPhone(userDto.getPhone()) ||
+                repository.existsByUsername(userDto.getUsername())) {
+            throw new BadRequestException("User with provided email, phone or username already exists");
+        }
     }
-
 }

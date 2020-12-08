@@ -2,13 +2,13 @@ package ru.twitting.petproject.builder;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.internal.util.Assert;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.twitting.petproject.dao.access.TagAccessService;
 import ru.twitting.petproject.dao.access.UserAccessService;
 import ru.twitting.petproject.dao.entity.ReportEntity;
 import ru.twitting.petproject.dao.entity.UserEntity;
-import ru.twitting.petproject.mapper.impl.UserReportDtoMapper;
-import ru.twitting.petproject.model.dto.UserReportRequestDto;
+import ru.twitting.petproject.exception.NotFoundException;
 import ru.twitting.petproject.model.dto.request.CreateReportRequest;
 import ru.twitting.petproject.util.PointUtils;
 
@@ -18,12 +18,11 @@ public class ReportEntityBuilder {
 
     private final TagAccessService tagAccessService;
     private final UserAccessService userAccessService;
-    private final UserReportDtoMapper userReportDtoMapper;
 
     public ReportEntity build(CreateReportRequest request) {
         Assert.notNull(request, "CreateReportRequest");
         var report = new ReportEntity();
-        report.setUser(getUser(request.getUser()));
+        report.setUser(getUser());
         report.setReportType(request.getReportType());
         var pet = request.getPet();
         report.setSex(pet.getSex());
@@ -42,8 +41,9 @@ public class ReportEntityBuilder {
         return report;
     }
 
-    private UserEntity getUser(UserReportRequestDto userDto) {
-        return userAccessService.findByNameAndPassword(userDto.getName(), userDto.getPassword())
-                .orElseGet(() -> userReportDtoMapper.convertToDestination(userDto));
+    private UserEntity getUser() {
+        var context = SecurityContextHolder.getContext();
+        return userAccessService.findByUsername(context.getAuthentication().getName())
+                .orElseThrow(() -> new NotFoundException(String.format("Not found any user with name %s", context.getAuthentication().getName())));
     }
 }

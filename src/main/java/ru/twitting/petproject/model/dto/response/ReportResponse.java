@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class ReportResponse {
 
     @NotNull
-    private UserReportResponseDto user;
+    private UserResponseDto user;
     @NotNull
     private PetDto pet;
     @NotNull
