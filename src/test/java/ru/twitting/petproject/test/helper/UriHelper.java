@@ -6,6 +6,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
+import static ru.twitting.petproject.test.helper.CollectionHelper.toMultiValueMap;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UriHelper {
 
@@ -26,6 +28,7 @@ public final class UriHelper {
         return UriComponentsBuilder.newInstance()
                 .scheme(BASE_SCHEMA)
                 .host(BASE_HOST)
+                .queryParams(toMultiValueMap(queryParams))
                 .port(port)
                 .path(path)
                 .build().toString();

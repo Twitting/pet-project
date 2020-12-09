@@ -2,7 +2,6 @@ package ru.twitting.petproject.dao.specification;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.util.CollectionUtils;
 import ru.twitting.petproject.dao.entity.ReportEntity;
 import ru.twitting.petproject.dao.entity.TagEntity;
 import ru.twitting.petproject.model.dto.ReportSearchParamsDto;

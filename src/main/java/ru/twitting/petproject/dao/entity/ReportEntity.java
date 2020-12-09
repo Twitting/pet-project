@@ -31,7 +31,7 @@ public class ReportEntity extends BaseEntity {
     @SequenceGenerator(name = "reportSeqGenerator", sequenceName = "report_seq", allocationSize = 1)
     private Long id;
 
-    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
@@ -53,7 +53,7 @@ public class ReportEntity extends BaseEntity {
     @Column(name = "breed")
     private String breed;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "report_tag",
             joinColumns = @JoinColumn(name = "report_id"),

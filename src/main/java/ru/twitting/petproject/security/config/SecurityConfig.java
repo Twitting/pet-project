@@ -25,7 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/reports").authenticated()
                 .antMatchers("/tags").permitAll()
                 .antMatchers("/users").authenticated()
-                .antMatchers(HttpMethod.POST,"/users").anonymous()
+                .antMatchers(HttpMethod.POST, "/users").anonymous()
                 .antMatchers(
                         "/", "/csrf",
                         "/v2/api-docs",

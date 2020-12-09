@@ -3,6 +3,7 @@ package ru.twitting.petproject.model.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.NotNull;
 
 @Data

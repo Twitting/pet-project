@@ -41,7 +41,7 @@ public final class EntityGenerator {
         entity.setComment(generateString());
         entity.setGeoDescription(generateString());
         entity.setRadius(generateDouble());
-        entity.setGeoLocation(generatePoint(generateDouble(), generateDouble()));
+        entity.setGeoLocation(generatePoint());
         entity.setUser(generateUserEntity());
         entity.setPetType(generateOneOf(PetType.CAT, PetType.DOG, PetType.OTHER));
         entity.setPhotos(generateSet(3, CommonGenerator::generateString));

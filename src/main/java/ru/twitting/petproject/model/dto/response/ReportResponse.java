@@ -2,23 +2,20 @@ package ru.twitting.petproject.model.dto.response;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.twitting.petproject.model.dto.*;
-
-import javax.validation.constraints.NotNull;
+import ru.twitting.petproject.model.dto.ExtraInfoDto;
+import ru.twitting.petproject.model.dto.GeoDto;
+import ru.twitting.petproject.model.dto.PetDto;
+import ru.twitting.petproject.model.dto.UserResponseDto;
 
 @Data
 @NoArgsConstructor
 public class ReportResponse {
 
-    @NotNull
+    private Long id;
     private UserResponseDto user;
-    @NotNull
     private PetDto pet;
-    @NotNull
     private GeoDto geo;
-    @NotNull
     private ExtraInfoDto extraInfo;
-
     private Double distance;
-
+    private Boolean owner;
 }

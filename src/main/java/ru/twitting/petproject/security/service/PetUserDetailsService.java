@@ -18,7 +18,7 @@ public class PetUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws AuthenticationException {
         var user = userAccessService.findByUsername(username)
-                .orElseThrow(() ->  new AuthenticationCredentialsNotFoundException(String.format("User with username %s not found", username)));
+                .orElseThrow(() -> new AuthenticationCredentialsNotFoundException(String.format("User with username %s not found", username)));
         return new SecurityUser(user);
     }
 }

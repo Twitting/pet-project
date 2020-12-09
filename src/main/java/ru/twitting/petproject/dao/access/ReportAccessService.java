@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.twitting.petproject.dao.entity.ReportEntity;
 import ru.twitting.petproject.dao.repository.ReportRepository;
 import ru.twitting.petproject.dao.specification.ReportSpecification;
+import ru.twitting.petproject.exception.NotFoundException;
 import ru.twitting.petproject.model.dto.ReportSearchParamsDto;
 
 import javax.transaction.Transactional;
@@ -27,5 +28,14 @@ public class ReportAccessService {
 
     public Page<ReportEntity> findAllByReportType(ReportSearchParamsDto searchParams, Pageable pageable) {
         return repository.findAll(Specification.where(new ReportSpecification(searchParams)), pageable);
+    }
+
+    public ReportEntity findById(Long id) {
+        return repository.findById(id).orElseThrow(() ->
+                new NotFoundException(String.format("Not found report with id %d", id)));
+    }
+
+    public Page<ReportEntity> findAllByUsername(String username, Pageable pageable) {
+        return repository.findAllByUser_Username(username, pageable);
     }
 }

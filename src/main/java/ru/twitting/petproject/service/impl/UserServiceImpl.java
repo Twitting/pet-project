@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUser() {
         var context = SecurityContextHolder.getContext();
-        var user =  userAccessService.findByUsername(context.getAuthentication().getName())
+        var user = userAccessService.findByUsername(context.getAuthentication().getName())
                 .orElseThrow(() -> new NotFoundException(String.format("Not found any user with name %s", context.getAuthentication().getName())));
         return new UserResponseDtoBuilder(user).build();
     }

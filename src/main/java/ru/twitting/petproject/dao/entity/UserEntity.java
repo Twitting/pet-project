@@ -22,7 +22,7 @@ public class UserEntity extends BaseEntity {
     @SequenceGenerator(name = "userSeqGenerator", sequenceName = "user_seq", allocationSize = 1)
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "shownName", nullable = false)

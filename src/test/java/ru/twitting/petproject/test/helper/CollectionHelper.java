@@ -8,6 +8,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,6 +23,7 @@ public final class CollectionHelper {
     @SafeVarargs
     public static <K, V> MultiValueMap<K, V> toMultiValueMap(Map.Entry<K, V>... queryParams) {
         return Stream.of(queryParams)
+                .filter(it -> Objects.nonNull(it.getValue()))
                 .collect(
                         Collectors.toMap(Map.Entry::getKey, v -> List.of(v.getValue()), throwingMerger(), LinkedMultiValueMap::new)
                 );

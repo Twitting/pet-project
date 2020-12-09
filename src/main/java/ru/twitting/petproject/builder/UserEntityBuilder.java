@@ -2,14 +2,12 @@ package ru.twitting.petproject.builder;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.internal.util.Assert;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.twitting.petproject.dao.access.UserAccessService;
 import ru.twitting.petproject.dao.entity.UserEntity;
 import ru.twitting.petproject.model.base.UserAuthorityType;
 import ru.twitting.petproject.model.dto.UserDto;
-import ru.twitting.petproject.security.model.SecurityUser;
 
 import java.util.Objects;
 

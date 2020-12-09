@@ -75,11 +75,19 @@ public final class CommonGenerator {
         return new PageImpl<>(content);
     }
 
+    public static <T> Page<T> generatePageOf(T content) {
+        return new PageImpl<>(List.of(content));
+    }
+
     public static Pageable generatePageable(Integer page, Integer size, Sort sort) {
         if (!Objects.nonNull(sort)) {
             sort = Sort.unsorted();
         }
         return PageRequest.of(page, size, sort);
+    }
+
+    public static Pageable generatePageable() {
+        return Pageable.unpaged();
     }
 
     public static <T> Set<T> generateSet(Integer count, Supplier<T> function) {
@@ -102,8 +110,11 @@ public final class CommonGenerator {
         return PointUtils.ofPostGis(latitude, longitude);
     }
 
-    public static <T> T generateOneOf(T ... objects) {
-        var quantity = objects.length;
-        return objects[generateInteger(0, quantity)];
+    public static Point generatePoint() {
+        return PointUtils.ofPostGis(generateDouble(), generateDouble());
+    }
+
+    public static <T> T generateOneOf(T... objects) {
+        return objects[generateInteger(1, objects.length) - 1];
     }
 }

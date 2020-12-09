@@ -2,6 +2,7 @@ package ru.twitting.petproject.builder;
 
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.security.core.context.SecurityContextHolder;
 import ru.twitting.petproject.dao.entity.ReportEntity;
 import ru.twitting.petproject.dao.entity.TagEntity;
 import ru.twitting.petproject.model.dto.ExtraInfoDto;
@@ -9,6 +10,7 @@ import ru.twitting.petproject.model.dto.GeoDto;
 import ru.twitting.petproject.model.dto.PetDto;
 import ru.twitting.petproject.model.dto.response.ReportResponse;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,14 +29,20 @@ public class ReportResponseBuilder {
 
     public ReportResponse build() {
         var response = new ReportResponse();
+        response.setId(entity.getId());
         response.setExtraInfo(getExtraInfo());
         response.setGeo(getGeo());
         response.setPet(getPet());
         response.setUser(new UserResponseDtoBuilder(entity.getUser()).build());
         Optional.ofNullable(point).ifPresent(it -> response.setDistance(distance(point, entity.getGeoLocation())));
+        response.setOwner(getOwner());
         return response;
     }
 
+    private boolean getOwner() {
+        var securityContext = SecurityContextHolder.getContext();
+        return Objects.equals(securityContext.getAuthentication().getName(), entity.getUser().getUsername());
+    }
 
     private PetDto getPet() {
         var pet = new PetDto();
