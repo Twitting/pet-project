@@ -1,9 +1,9 @@
 package ru.twitting.petproject.mapper;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Assert;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.springframework.util.Assert;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;

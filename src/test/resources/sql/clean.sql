@@ -1,1 +1,2 @@
-DELETE FROM pet_project."user";
+DELETE
+FROM pet_project."user";

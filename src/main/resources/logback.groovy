@@ -1,5 +1,4 @@
 import net.logstash.logback.encoder.LogstashEncoder
-import PatternLayoutEncoder
 
 import java.nio.charset.Charset
 

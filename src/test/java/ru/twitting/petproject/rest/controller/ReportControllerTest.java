@@ -11,19 +11,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.util.ReflectionTestUtils;
+import ru.twitting.petproject.model.base.PetType;
+import ru.twitting.petproject.model.base.ReportType;
 import ru.twitting.petproject.model.dto.request.CreateReportRequest;
 import ru.twitting.petproject.service.CreateReportService;
+import ru.twitting.petproject.service.GetReportService;
 import ru.twitting.petproject.test.tags.SpringIntegrationTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
 import static ru.twitting.petproject.test.helper.AssertionHelper.assertCall;
-import static ru.twitting.petproject.test.helper.ControllerHelper.post;
-import static ru.twitting.petproject.test.helper.generator.DtoGenerator.generateCreateReportRequest;
-import static ru.twitting.petproject.test.helper.generator.DtoGenerator.generateReportResponse;
+import static ru.twitting.petproject.test.helper.CollectionHelper.entry;
+import static ru.twitting.petproject.test.helper.ControllerHelper.*;
+import static ru.twitting.petproject.test.helper.generator.CommonGenerator.generateLong;
+import static ru.twitting.petproject.test.helper.generator.CommonGenerator.generatePageOf;
+import static ru.twitting.petproject.test.helper.generator.DtoGenerator.*;
 
 @SpringIntegrationTest
 @DisplayName("ReportController Integration test")
@@ -36,6 +40,8 @@ class ReportControllerTest {
 
     @Mock
     private CreateReportService createReportServiceMock;
+    @Mock
+    private GetReportService getReportServiceMock;
 
     @Autowired
     private ReportController controller;
@@ -47,16 +53,19 @@ class ReportControllerTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         ReflectionTestUtils.setField(controller, "createReportService", createReportServiceMock);
+        ReflectionTestUtils.setField(controller, "getReportService", getReportServiceMock);
     }
 
     @AfterEach
     void tearDown() {
-        reset(createReportServiceMock);
+        reset(
+                createReportServiceMock,
+                getReportServiceMock
+        );
     }
 
     //  -------------------------------- POSITIVE TESTS --------------------------------
 
-    @SneakyThrows
     @Test
     @DisplayName("createReport(): returns valid response entity on valid request")
     void successfulCreateReport() {
@@ -65,7 +74,7 @@ class ReportControllerTest {
 
         var actual = assertDoesNotThrow(
                 () -> post(
-                        restTemplate,
+                        restTemplate.withBasicAuth(MOCK_USERNAME, MOCK_PASSWORD),
                         generateCreateReportRequest(),
                         "/reports",
                         port
@@ -73,7 +82,62 @@ class ReportControllerTest {
                 )
         );
         assertCall().accept(actual, HttpStatus.OK);
-        verify(createReportServiceMock, times(1)).createReport(any());
+        verify(createReportServiceMock).createReport(any());
+    }
+
+    @Test
+    @DisplayName("getReports(): returns valid response entity on valid request")
+    void successfulGetReports() {
+
+        when(getReportServiceMock.getReports(any(), any())).thenReturn(generatePageOf(generateShortReportResponse()));
+
+        var actual = assertDoesNotThrow(
+                () -> get(
+                        restTemplate.withBasicAuth(MOCK_USERNAME, MOCK_PASSWORD),
+                        "/reports",
+                        port,
+                        entry("reportType", ReportType.LOST.name()),
+                        entry("petType", PetType.CAT.name())
+                )
+        );
+        assertCall().accept(actual, HttpStatus.OK);
+        verify(getReportServiceMock).getReports(any(), any());
+    }
+
+    @Test
+    @DisplayName("getUserReports(): returns valid response entity on valid request")
+    void successfulGetUserReports() {
+
+        when(getReportServiceMock.getUserReports(any())).thenReturn(generatePageOf(generateShortReportResponse()));
+
+        var actual = assertDoesNotThrow(
+                () -> get(
+                        restTemplate.withBasicAuth(MOCK_USERNAME, MOCK_PASSWORD),
+                        "/reports/my",
+                        port
+                )
+        );
+        assertCall().accept(actual, HttpStatus.OK);
+        verify(getReportServiceMock).getUserReports(any());
+    }
+
+    @SneakyThrows
+    @Test
+    @DisplayName("getReport(): returns valid response entity on valid request")
+    void successfulGetReport() {
+
+        when(getReportServiceMock.getReport(any(), any())).thenReturn(generateReportResponse());
+
+        var actual = assertDoesNotThrow(
+                () -> get(
+                        restTemplate.withBasicAuth(MOCK_USERNAME, MOCK_PASSWORD),
+                        "/reports/" + generateLong(),
+                        port
+
+                )
+        );
+        assertCall().accept(actual, HttpStatus.OK);
+        verify(getReportServiceMock).getReport(any(), any());
     }
 
     //  -------------------------------- NEGATIVE TESTS --------------------------------
@@ -85,7 +149,7 @@ class ReportControllerTest {
 
         var actual = assertDoesNotThrow(
                 () -> post(
-                        restTemplate,
+                        restTemplate.withBasicAuth(MOCK_USERNAME, MOCK_PASSWORD),
                         invalidRequest,
                         "/reports",
                         port

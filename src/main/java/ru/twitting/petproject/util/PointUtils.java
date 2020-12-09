@@ -33,11 +33,9 @@ public final class PointUtils {
     /**
      * Constructs a <code>Point</code> with the given coordinate and with a {@link #GPS_SRID}
      *
-     * @param latitude is a geographic coordinate that specifies the north–south position of a point on the Earth's surface.
+     * @param latitude  is a geographic coordinate that specifies the north–south position of a point on the Earth's surface.
      * @param longitude is a geographic coordinate that specifies the east–west position of a point on the Earth's surface.
-     *
      * @return {@link Point}
-     *
      * @see <a href="https://stackoverflow.com/a/21299968">Can find more yourself</a>
      */
     public static Point ofPostGis(Double latitude, Double longitude) {
@@ -56,13 +54,11 @@ public final class PointUtils {
     /**
      * Calculate distance between two points in latitude and longitude
      *
-     * @param fromLatitude is started latitude point
-     * @param toLatitude is the end latitude point
+     * @param fromLatitude  is started latitude point
+     * @param toLatitude    is the end latitude point
      * @param fromLongitude is starter longitude point
-     * @param toLongitude is the end longitude point
-     *
+     * @param toLongitude   is the end longitude point
      * @return Distance in Meters
-     *
      * @see <a href="https://stackoverflow.com/a/16794680">Can find more yourself</a>
      */
     public static Double distance(Double fromLatitude, Double toLatitude, Double fromLongitude, Double toLongitude) {

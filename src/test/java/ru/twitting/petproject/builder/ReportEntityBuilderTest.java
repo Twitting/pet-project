@@ -29,7 +29,7 @@ class ReportEntityBuilderTest {
     private TagAccessService tagAccessServiceMock;
     @Mock
     private UserAccessService userAccessServiceMock;
-    
+
     @Autowired
     private ReportEntityBuilder builder;
 

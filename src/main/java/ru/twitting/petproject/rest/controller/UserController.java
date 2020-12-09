@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.twitting.petproject.model.dto.*;
+import ru.twitting.petproject.model.dto.BaseResponse;
+import ru.twitting.petproject.model.dto.UserDto;
+import ru.twitting.petproject.model.dto.UserResponseDto;
 import ru.twitting.petproject.service.UserService;
 
 import javax.validation.Valid;

@@ -1,6 +1,6 @@
 package ru.twitting.petproject.model.base;
 
-public enum  PetType {
+public enum PetType {
 
     CAT,
     DOG,
