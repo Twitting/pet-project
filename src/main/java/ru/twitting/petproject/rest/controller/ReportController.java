@@ -17,8 +17,8 @@ import ru.twitting.petproject.model.dto.ReportSearchParamsDto;
 import ru.twitting.petproject.model.dto.request.CreateReportRequest;
 import ru.twitting.petproject.model.dto.response.ReportResponse;
 import ru.twitting.petproject.model.dto.response.ShortReportResponse;
-import ru.twitting.petproject.service.ManageReportService;
 import ru.twitting.petproject.service.GetReportService;
+import ru.twitting.petproject.service.ManageReportService;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;

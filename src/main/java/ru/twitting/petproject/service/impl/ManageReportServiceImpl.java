@@ -10,7 +10,6 @@ import ru.twitting.petproject.model.dto.request.CreateReportRequest;
 import ru.twitting.petproject.model.dto.response.ReportResponse;
 import ru.twitting.petproject.service.ManageReportService;
 
-
 import static ru.twitting.petproject.util.UserVerificator.checkUsername;
 
 @Service

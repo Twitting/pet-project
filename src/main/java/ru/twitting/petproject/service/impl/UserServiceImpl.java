@@ -8,10 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.twitting.petproject.builder.UserEntityBuilder;
 import ru.twitting.petproject.builder.UserResponseDtoBuilder;
 import ru.twitting.petproject.dao.access.UserAccessService;
-import ru.twitting.petproject.dao.entity.UserEntity;
-import ru.twitting.petproject.exception.BadRequestException;
-import ru.twitting.petproject.exception.ForbiddenException;
-import ru.twitting.petproject.exception.NotFoundException;
 import ru.twitting.petproject.model.dto.UserDto;
 import ru.twitting.petproject.model.dto.UserResponseDto;
 import ru.twitting.petproject.service.UserService;
@@ -57,12 +53,5 @@ public class UserServiceImpl implements UserService {
         Optional.ofNullable(user.getPhone()).ifPresent(userEntity::setPhone);
         var savedUser = userAccessService.save(userEntity);
         return new UserResponseDtoBuilder(savedUser).build();
-    }
-
-    private void checkCurrentUser(UserDto userDto) {
-        var context = SecurityContextHolder.getContext();
-        if (!Objects.equals(context.getAuthentication().getName(), userDto.getUsername())) {
-            throw new ForbiddenException(String.format("Not allowed to change user with username %s", userDto.getUsername()));
-        }
     }
 }

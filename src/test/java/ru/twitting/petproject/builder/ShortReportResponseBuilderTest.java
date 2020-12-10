@@ -31,6 +31,7 @@ class ShortReportResponseBuilderTest {
         assertEquals(entity.getSex(), actual.getSex());
         assertNull(actual.getDistance());
     }
+
     @Test
     @DisplayName("build(): returns valid response entity on valid request, with point")
     void successfulBuildPoint() {

@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import ru.twitting.petproject.test.tags.UnitTest;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.twitting.petproject.test.helper.generator.CommonGenerator.generatePoint;
-import static ru.twitting.petproject.test.helper.generator.EntityGenerator.generateReportEntity;
 import static ru.twitting.petproject.test.helper.generator.EntityGenerator.generateUserEntity;
 
 @UnitTest
