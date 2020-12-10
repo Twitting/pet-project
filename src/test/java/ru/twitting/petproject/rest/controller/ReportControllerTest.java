@@ -1,6 +1,5 @@
 package ru.twitting.petproject.rest.controller;
 
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +15,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import ru.twitting.petproject.model.base.PetType;
 import ru.twitting.petproject.model.base.ReportType;
 import ru.twitting.petproject.model.dto.request.CreateReportRequest;
-import ru.twitting.petproject.service.CreateReportService;
 import ru.twitting.petproject.service.GetReportService;
+import ru.twitting.petproject.service.ManageReportService;
 import ru.twitting.petproject.test.tags.SpringIntegrationTest;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -39,7 +38,7 @@ class ReportControllerTest {
     private int port;
 
     @Mock
-    private CreateReportService createReportServiceMock;
+    private ManageReportService manageReportServiceMock;
     @Mock
     private GetReportService getReportServiceMock;
 
@@ -52,14 +51,14 @@ class ReportControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        ReflectionTestUtils.setField(controller, "createReportService", createReportServiceMock);
+        ReflectionTestUtils.setField(controller, "manageReportService", manageReportServiceMock);
         ReflectionTestUtils.setField(controller, "getReportService", getReportServiceMock);
     }
 
     @AfterEach
     void tearDown() {
         reset(
-                createReportServiceMock,
+                manageReportServiceMock,
                 getReportServiceMock
         );
     }
@@ -70,7 +69,7 @@ class ReportControllerTest {
     @DisplayName("createReport(): returns valid response entity on valid request")
     void successfulCreateReport() {
 
-        when(createReportServiceMock.createReport(any())).thenReturn(generateReportResponse());
+        when(manageReportServiceMock.createReport(any())).thenReturn(generateReportResponse());
 
         var actual = assertDoesNotThrow(
                 () -> post(
@@ -82,7 +81,7 @@ class ReportControllerTest {
                 )
         );
         assertCall().accept(actual, HttpStatus.OK);
-        verify(createReportServiceMock).createReport(any());
+        verify(manageReportServiceMock).createReport(any());
     }
 
     @Test
@@ -121,7 +120,6 @@ class ReportControllerTest {
         verify(getReportServiceMock).getUserReports(any());
     }
 
-    @SneakyThrows
     @Test
     @DisplayName("getReport(): returns valid response entity on valid request")
     void successfulGetReport() {
@@ -138,6 +136,25 @@ class ReportControllerTest {
         );
         assertCall().accept(actual, HttpStatus.OK);
         verify(getReportServiceMock).getReport(any(), any());
+    }
+
+    @Test
+    @DisplayName("closeReport(): returns valid response entity on valid request")
+    void successfulCloseReport() {
+
+        doNothing().when(manageReportServiceMock).closeReport(any());
+
+        var actual = assertDoesNotThrow(
+                () -> delete(
+                        restTemplate.withBasicAuth(MOCK_USERNAME, MOCK_PASSWORD),
+                        null,
+                        "/reports/" + generateLong(),
+                        port
+
+                )
+        );
+        assertCall().accept(actual, HttpStatus.OK);
+        verify(manageReportServiceMock).closeReport(any());
     }
 
     //  -------------------------------- NEGATIVE TESTS --------------------------------
@@ -157,6 +174,6 @@ class ReportControllerTest {
                 )
         );
         assertCall().accept(actual, HttpStatus.BAD_REQUEST);
-        verify(createReportServiceMock, never()).createReport(any());
+        verify(manageReportServiceMock, never()).createReport(any());
     }
 }

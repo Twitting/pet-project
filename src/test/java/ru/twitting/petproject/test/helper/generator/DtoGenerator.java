@@ -17,6 +17,20 @@ import static ru.twitting.petproject.test.helper.generator.CommonGenerator.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DtoGenerator {
 
+    public static UserDto generateUserDto() {
+        var dto = new UserDto();
+        dto.setPassword(generateString());
+        dto.setMatchingPassword(dto.getPassword());
+        dto.setNewPassword(generateString());
+        dto.setPhoneShown(true);
+        dto.setPhone(generatePhone());
+        dto.setEmailShown(true);
+        dto.setEmail(generateEmail());
+        dto.setShownName(generateString());
+        dto.setUsername(generateString());
+        return dto;
+    }
+
     public static ReportSearchParamsDto generateReportSearchParamsDto() {
         return ReportSearchParamsDto.builder()
                 .geoLocation(generatePoint())

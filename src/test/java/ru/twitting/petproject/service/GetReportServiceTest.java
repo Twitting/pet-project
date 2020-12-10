@@ -6,34 +6,33 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.util.ReflectionTestUtils;
 import ru.twitting.petproject.dao.access.ReportAccessService;
-import ru.twitting.petproject.test.tags.SpringMockTest;
+import ru.twitting.petproject.service.impl.GetReportServiceImpl;
+import ru.twitting.petproject.test.TestWithSecurityContext;
+import ru.twitting.petproject.test.tags.UnitTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static ru.twitting.petproject.test.helper.ControllerHelper.MOCK_USERNAME;
 import static ru.twitting.petproject.test.helper.generator.CommonGenerator.*;
 import static ru.twitting.petproject.test.helper.generator.DtoGenerator.generateReportSearchParamsDto;
 import static ru.twitting.petproject.test.helper.generator.EntityGenerator.generateReportEntity;
 
-@SpringMockTest
-@DisplayName("GetReportService Mock test")
-class GetReportServiceTest {
+@UnitTest
+@DisplayName("GetReportService Unit test")
+class GetReportServiceTest extends TestWithSecurityContext {
 
-    public static final String MOCK_USERNAME = "user";
     @Mock
     private ReportAccessService reportAccessServiceMock;
 
-    @Autowired
     private GetReportService getReportService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        ReflectionTestUtils.setField(getReportService, "reportAccessService", reportAccessServiceMock);
+        initSecurityContext();
+        getReportService = new GetReportServiceImpl(reportAccessServiceMock);
     }
 
     @AfterEach
@@ -59,7 +58,6 @@ class GetReportServiceTest {
     }
 
     @Test
-    @WithMockUser(username = MOCK_USERNAME)
     @DisplayName("getUserReports(): returns valid response entity on valid request")
     void successfulGetUserReports() {
         var entity = generateReportEntity();
@@ -74,7 +72,6 @@ class GetReportServiceTest {
     }
 
     @Test
-    @WithMockUser(username = MOCK_USERNAME)
     @DisplayName("getReport(): returns valid response entity on valid request, owner")
     void successfulGetReport() {
         var entity = generateReportEntity();
@@ -89,7 +86,6 @@ class GetReportServiceTest {
     }
 
     @Test
-    @WithMockUser(username = MOCK_USERNAME)
     @DisplayName("getReport(): returns valid response entity on valid request, owner")
     void successfulGetReportNotOwner() {
         when(reportAccessServiceMock.findById(any())).thenReturn(generateReportEntity());

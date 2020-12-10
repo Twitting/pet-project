@@ -42,8 +42,7 @@ class UserAccessServiceTest {
         var actual = userAccessService.findByUsername(entity.getUsername());
 
         assertNotNull(actual);
-        assertTrue(actual.isPresent());
-        assertEquals(entity.getUsername(), actual.orElseThrow().getUsername());
+        assertEquals(entity.getUsername(), actual.getUsername());
     }
 
 }

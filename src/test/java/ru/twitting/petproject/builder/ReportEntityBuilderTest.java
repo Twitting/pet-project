@@ -6,14 +6,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.util.ReflectionTestUtils;
 import ru.twitting.petproject.dao.access.TagAccessService;
 import ru.twitting.petproject.dao.access.UserAccessService;
+import ru.twitting.petproject.test.TestWithSecurityContext;
 import ru.twitting.petproject.test.helper.generator.EntityGenerator;
-import ru.twitting.petproject.test.tags.SpringIntegrationTest;
-
-import java.util.Optional;
+import ru.twitting.petproject.test.tags.UnitTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -21,23 +18,22 @@ import static ru.twitting.petproject.test.helper.generator.CommonGenerator.gener
 import static ru.twitting.petproject.test.helper.generator.DtoGenerator.generateCreateReportRequest;
 import static ru.twitting.petproject.test.helper.generator.EntityGenerator.generateUserEntity;
 
-@SpringIntegrationTest
-@DisplayName("ReportEntityBuilder Integration test")
-class ReportEntityBuilderTest {
+@UnitTest
+@DisplayName("ReportEntityBuilder Unit test")
+class ReportEntityBuilderTest extends TestWithSecurityContext {
 
     @Mock
     private TagAccessService tagAccessServiceMock;
     @Mock
     private UserAccessService userAccessServiceMock;
 
-    @Autowired
     private ReportEntityBuilder builder;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        ReflectionTestUtils.setField(builder, "tagAccessService", tagAccessServiceMock);
-        ReflectionTestUtils.setField(builder, "userAccessService", userAccessServiceMock);
+        initSecurityContext();
+        builder = new ReportEntityBuilder(tagAccessServiceMock, userAccessServiceMock);
     }
 
     @AfterEach
@@ -56,7 +52,7 @@ class ReportEntityBuilderTest {
         when(tagAccessServiceMock.findOrCreateByNames(any()))
                 .thenReturn(generateSet(3, EntityGenerator::generateTagEntity));
         when(userAccessServiceMock.findByUsername(any()))
-                .thenReturn(Optional.of(generateUserEntity()));
+                .thenReturn(generateUserEntity());
 
         var actual = assertDoesNotThrow(() -> builder.build(generateCreateReportRequest()));
 

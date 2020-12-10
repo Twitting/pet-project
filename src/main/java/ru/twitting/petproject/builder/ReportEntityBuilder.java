@@ -8,7 +8,6 @@ import ru.twitting.petproject.dao.access.TagAccessService;
 import ru.twitting.petproject.dao.access.UserAccessService;
 import ru.twitting.petproject.dao.entity.ReportEntity;
 import ru.twitting.petproject.dao.entity.UserEntity;
-import ru.twitting.petproject.exception.NotFoundException;
 import ru.twitting.petproject.model.dto.request.CreateReportRequest;
 import ru.twitting.petproject.util.PointUtils;
 
@@ -43,7 +42,6 @@ public class ReportEntityBuilder {
 
     private UserEntity getUser() {
         var context = SecurityContextHolder.getContext();
-        return userAccessService.findByUsername(context.getAuthentication().getName())
-                .orElseThrow(() -> new NotFoundException(String.format("Not found any user with name %s", context.getAuthentication().getName())));
+        return userAccessService.findByUsername(context.getAuthentication().getName());
     }
 }

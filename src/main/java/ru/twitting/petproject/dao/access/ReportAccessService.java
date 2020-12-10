@@ -38,4 +38,9 @@ public class ReportAccessService {
     public Page<ReportEntity> findAllByUsername(String username, Pageable pageable) {
         return repository.findAllByUser_Username(username, pageable);
     }
+
+    public void delete(ReportEntity entity) {
+        LOGGER.debug("Entity with id {} was soft-deleted", entity.getId());
+        repository.delete(entity);
+    }
 }
