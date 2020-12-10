@@ -24,6 +24,7 @@ public final class EntityGenerator {
 
     public static UserEntity generateUserEntity() {
         var entity = new UserEntity();
+        entity.setId(generateLong());
         entity.setPassword(generateString());
         entity.setUsername(generateString());
         entity.setShownName(generateString());
@@ -37,6 +38,7 @@ public final class EntityGenerator {
 
     public static ReportEntity generateReportEntity() {
         var entity = new ReportEntity();
+        entity.setId(generateLong());
         entity.setLostFoundDate(LocalDate.now());
         entity.setComment(generateString());
         entity.setGeoDescription(generateString());

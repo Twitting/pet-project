@@ -17,7 +17,7 @@ import ru.twitting.petproject.model.dto.ReportSearchParamsDto;
 import ru.twitting.petproject.model.dto.request.CreateReportRequest;
 import ru.twitting.petproject.model.dto.response.ReportResponse;
 import ru.twitting.petproject.model.dto.response.ShortReportResponse;
-import ru.twitting.petproject.service.CreateReportService;
+import ru.twitting.petproject.service.ManageReportService;
 import ru.twitting.petproject.service.GetReportService;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -33,13 +33,13 @@ import static ru.twitting.petproject.util.PointUtils.ofPostGisNullable;
 @Validated
 public class ReportController {
 
-    private final CreateReportService createReportService;
+    private final ManageReportService manageReportService;
     private final GetReportService getReportService;
 
     @ApiOperation(value = "Создать объявление о пропаже/находке")
     @PostMapping
     public ResponseEntity<BaseResponse> createReport(@Valid @RequestBody CreateReportRequest request) {
-        return ResponseEntity.ok(new BaseResponse(createReportService.createReport(request)));
+        return ResponseEntity.ok(new BaseResponse(manageReportService.createReport(request)));
     }
 
     @ApiOperation(value = "Получить страницу с объявлениями")
@@ -78,6 +78,13 @@ public class ReportController {
                                                                   @RequestParam(required = false, defaultValue = "") Double latitude,
                                                                   @RequestParam(required = false, defaultValue = "") Double longitude) {
         return ResponseEntity.ok(new BaseResponse(getReportService.getReport(reportId, ofPostGisNullable(latitude, longitude))));
+    }
+
+    @ApiOperation(value = "Закрыть объявление по id")
+    @DeleteMapping("/{reportId}")
+    public ResponseEntity<BaseResponse<ReportResponse>> closeReport(@PathVariable Long reportId) {
+        manageReportService.closeReport(reportId);
+        return ResponseEntity.ok(new BaseResponse());
     }
 
 }

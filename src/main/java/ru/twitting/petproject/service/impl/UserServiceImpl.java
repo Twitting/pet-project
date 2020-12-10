@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.twitting.petproject.builder.UserEntityBuilder;
 import ru.twitting.petproject.builder.UserResponseDtoBuilder;
 import ru.twitting.petproject.dao.access.UserAccessService;
+import ru.twitting.petproject.dao.entity.UserEntity;
+import ru.twitting.petproject.exception.BadRequestException;
+import ru.twitting.petproject.exception.ForbiddenException;
 import ru.twitting.petproject.exception.NotFoundException;
 import ru.twitting.petproject.model.dto.UserDto;
 import ru.twitting.petproject.model.dto.UserResponseDto;
@@ -15,6 +18,8 @@ import ru.twitting.petproject.service.UserService;
 
 import java.util.Objects;
 import java.util.Optional;
+
+import static ru.twitting.petproject.util.UserVerificator.checkUsername;
 
 @Service
 @RequiredArgsConstructor
@@ -33,16 +38,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getUser() {
         var context = SecurityContextHolder.getContext();
-        var user = userAccessService.findByUsername(context.getAuthentication().getName())
-                .orElseThrow(() -> new NotFoundException(String.format("Not found any user with name %s", context.getAuthentication().getName())));
+        var user = userAccessService.findByUsername(context.getAuthentication().getName());
         return new UserResponseDtoBuilder(user).build();
     }
 
     @Override
     @Transactional
     public UserResponseDto changeUser(UserDto user) {
-        var userEntity = userAccessService.findByUsername(user.getUsername())
-                .orElseThrow(() -> new NotFoundException(String.format("Not found any user with name %s", user.getUsername())));
+        var userEntity = userAccessService.findByUsername(user.getUsername());
+        checkUsername(user.getUsername());
         if (Objects.equals(user.getPassword(), user.getMatchingPassword()) && Objects.nonNull(user.getNewPassword())) {
             userEntity.setPassword(passwordEncoder.encode(user.getNewPassword()));
         }
@@ -53,5 +57,12 @@ public class UserServiceImpl implements UserService {
         Optional.ofNullable(user.getPhone()).ifPresent(userEntity::setPhone);
         var savedUser = userAccessService.save(userEntity);
         return new UserResponseDtoBuilder(savedUser).build();
+    }
+
+    private void checkCurrentUser(UserDto userDto) {
+        var context = SecurityContextHolder.getContext();
+        if (!Objects.equals(context.getAuthentication().getName(), userDto.getUsername())) {
+            throw new ForbiddenException(String.format("Not allowed to change user with username %s", userDto.getUsername()));
+        }
     }
 }

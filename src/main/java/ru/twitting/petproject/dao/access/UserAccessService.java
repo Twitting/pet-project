@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.twitting.petproject.dao.entity.UserEntity;
 import ru.twitting.petproject.dao.repository.UserRepository;
 import ru.twitting.petproject.exception.BadRequestException;
+import ru.twitting.petproject.exception.NotFoundException;
 import ru.twitting.petproject.model.dto.UserDto;
 
 import javax.transaction.Transactional;
@@ -19,8 +20,14 @@ public class UserAccessService {
 
     private final UserRepository repository;
 
-    public Optional<UserEntity> findByUsername(String username) {
+    public Optional<UserEntity> findByUsernameOptional(String username) {
         return repository.findByUsername(username);
+    }
+
+    public UserEntity findByUsername(String username) {
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException(String.format("Not found any user with name %s", username)));
+
     }
 
     public UserEntity save(UserEntity entity) {

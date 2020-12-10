@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.twitting.petproject.exception.BadRequestException;
+import ru.twitting.petproject.exception.ForbiddenException;
 import ru.twitting.petproject.exception.NotFoundException;
 import ru.twitting.petproject.model.dto.BaseResponse;
 
@@ -29,11 +30,16 @@ public class PetRestExceptionHandler {
         return ResponseEntity.status(BAD_REQUEST).body(new BaseResponse(e.getMessage()));
     }
 
-
     @ExceptionHandler(NotFoundException.class)
-    ResponseEntity<BaseResponse<String>> exception(NotFoundException e) {
+    ResponseEntity<BaseResponse<String>> notFoundException(NotFoundException e) {
         LOGGER.error("Not found exception occured", e);
         return ResponseEntity.status(NOT_FOUND).body(new BaseResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    ResponseEntity<BaseResponse<String>> forbiddenException(ForbiddenException e) {
+        LOGGER.error("Forbidden exception occured", e);
+        return ResponseEntity.status(FORBIDDEN).body(new BaseResponse(e.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
